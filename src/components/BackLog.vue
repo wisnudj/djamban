@@ -7,7 +7,7 @@
         <p class="card-text"></p>
         <p class="card-text">Point: {{card.point}}</p>
         <p class="card-text">Assigned to: {{card.assignto}}</p>
-        <button class="btn btn-secondary my-2 my-sm-0" type="submit" data-toggle="modal" data-target="#detailmodal">detail</button>
+        <button class="btn btn-secondary my-2 my-sm-0" type="submit" data-toggle="modal" data-target="#detailmodal" v-on:click="setone(card)">detail</button>
       </div>
       <div class="card-footer text-muted">
 
@@ -19,7 +19,13 @@
 <script>
 export default {
   name: 'BackLog',
-  props: ['card']
+  props: ['card'],
+
+  methods: {
+    setone: function(card) {
+      this.$emit('setone', card)
+    }
+  }
 }
 </script>
 

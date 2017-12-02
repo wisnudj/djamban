@@ -5,16 +5,16 @@
       <CardTitle></CardTitle>
       <div class="row">
         <div class="col-md-3 spasi">
-          <BackLog v-for="(card, index) in board" :key="index" :card="card" :index="index"></BackLog>
+          <BackLog v-for="(card, index) in board" :key="index" :card="card" :index="index" @setone="showdetail"></BackLog>
         </div>
         <div class="col-md-3 spasi">
-          <Todo v-for="(card, index) in board" :key="index" :card="card" :index="index"></Todo>
+          <Todo v-for="(card, index) in board" :key="index" :card="card" :index="index" @setone="showdetail"></Todo>
         </div>
         <div class="col-md-3 spasi">
-          <Doing v-for="(card, index) in board" :key="index" :card="card" :index="index"></Doing>
+          <Doing v-for="(card, index) in board" :key="index" :card="card" :index="index" @setone="showdetail"></Doing>
         </div>
         <div class="col-md-3 spasi">
-          <Done v-for="(card, index) in board" :key="index" :card="card" :index="index"></Done>
+          <Done v-for="(card, index) in board" :key="index" :card="card" :index="index" @setone="showdetail"></Done>
         </div>
       </div>
     </div>
@@ -28,7 +28,6 @@
             </button>
           </div>
           <div class="modal-body">
-            <form v-on:submit.prevent="createCard">
               <fieldset>
                 <div class="form-group">
                   <label for="titleinput">Title</label>
@@ -50,10 +49,9 @@
                   <small id="emailHelp" class="form-text text-muted"></small>
                 </div>
               </fieldset>
-              <input type="submit" class="btn btn-info" value="Create"></input>
-            </form>
           </div>
           <div class="modal-footer">
+            <button type="submit" class="btn btn-info" v-on:click="createCard" data-dismiss="modal">Create</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </div>
@@ -63,27 +61,33 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Detail Task boker for adi</h5>
+            <h5 class="modal-title">Detail Task {{oneCard.title}} for {{oneCard.assignto}}</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
             <h5>Task Description :</h5>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>{{oneCard.description}}</p>
             <h5>Point:</h5>
-            <p>50</p>
+            <p>{{oneCard.point}}</p>
             <h5>Status:</h5>
-            <p>Backlog</p>
+            <div class="form-group">
+              <select class="form-control" id="exampleSelect1" v-model="oneCard.status">
+                <option value="BackLog">BackLog</option>
+                <option value="Todo">Todo</option>
+                <option value="Doing">Doing</option>
+                <option value="Done">Done</option>
+              </select>
+            </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary">Backlog</button>
-            <button type="button" class="btn btn-secondary">Delete</button>
-            <button type="button" class="btn btn-secondary">To-do</button>
+            <button type="button" class="btn btn-secondary" v-on:click="deleteCard(oneCard)" data-dismiss="modal">Delete</button>
+            <button type="button" class="btn btn-secondary" v-on:click="updateStatus(oneCard)" data-dismiss="modal">Save</button>
           </div>
         </div>
       </div>
-    </div>    
+    </div>
   </div>
 </template>
 
@@ -113,7 +117,17 @@ export default {
         description: '',
         point: 0,
         assignto: '',
-        status: 'Todo',
+        status: 'BackLog',
+        createdAt: Date.now()
+      },
+
+      oneCard: {
+        key: '',
+        title: '',
+        description: '',
+        point: 0,
+        assignto: '',
+        status: '',
         createdAt: Date.now()
       }
     }
@@ -137,6 +151,25 @@ export default {
       this.newCard.description = ''
       this.newCard.point = ''
       this.newCard.assignto = ''
+    },
+
+    showdetail: function(card) {
+      this.oneCard.key = card['.key']
+      this.oneCard.title = card.title
+      this.oneCard.description = card.description
+      this.oneCard.point = card.point
+      this.oneCard.assignto = card.assignto
+      this.oneCard.status = card.status
+      this.oneCard.createdAt = card.createdAt
+    },
+
+    updateStatus: function(card) {
+      boardRef.child(card.key).update({status: card.status})
+      // console.log(card.status);
+    },
+
+    deleteCard: function(card) {
+      boardRef.child(card.key).remove()
     }
   }
 }
