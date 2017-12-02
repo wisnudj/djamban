@@ -1,0 +1,27 @@
+<template lang="html">
+  <div v-if="card.status == 'Todo'">
+  <div class="card card-space">
+    <h5 class="card-header">{{card.title}}</h5>
+    <div class="card-body">
+      <p class="card-text">{{card.description}}</p>
+      <p class="card-text"></p>
+      <p class="card-text">Point: {{card.point}}</p>
+      <p class="card-text">Assigned to: {{card.assignto}}</p>
+      <button class="btn btn-secondary my-2 my-sm-0" type="submit" data-toggle="modal" data-target="#detailmodal">detail</button>
+    </div>
+    <div class="card-footer text-muted">
+      2 days ago
+    </div>
+  </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Todo',
+  props: ['card']
+}
+</script>
+
+<style lang="css">
+</style>
